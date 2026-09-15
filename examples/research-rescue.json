@@ -1,0 +1,401 @@
+{
+  "schema": 1,
+  "name": "Research Rescue Test",
+  "brief": "A two-wave Forest 2 test encounter. Clear both waves and speak to the researcher to finish.",
+  "party": 4,
+  "difficulty": "Ultimate",
+  "questNumber": 65000,
+  "waves": [
+    {
+      "episode": 1,
+      "floor": 2,
+      "area": 2,
+      "layout": 0,
+      "entities": 0,
+      "map": "map_forest02_00",
+      "table": "SetDataTableOn",
+      "room": 12,
+      "wave": 1,
+      "count": 4,
+      "type": 68,
+      "name": "Savage Wolf",
+      "positions": [
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            -8.538543701171875,
+            52.32530975341797,
+            -224.29409790039062
+          ],
+          "angles": [
+            0,
+            0,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        },
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            74.1446533203125,
+            52.32530975341797,
+            -151.09356689453125
+          ],
+          "angles": [
+            0,
+            57344,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        },
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            103.802978515625,
+            53.71543884277344,
+            -32.063621520996094
+          ],
+          "angles": [
+            0,
+            45056,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        },
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            -27.71002197265625,
+            57.132972717285156,
+            28.116851806640625
+          ],
+          "angles": [
+            0,
+            32768,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "floor": 2,
+      "area": 2,
+      "layout": 0,
+      "entities": 0,
+      "map": "map_forest02_00",
+      "table": "SetDataTableOn",
+      "room": 12,
+      "wave": 2,
+      "count": 4,
+      "type": 68,
+      "name": "Savage Wolf",
+      "positions": [
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            -8.538543701171875,
+            52.32530975341797,
+            -224.29409790039062
+          ],
+          "angles": [
+            0,
+            0,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        },
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            74.1446533203125,
+            52.32530975341797,
+            -151.09356689453125
+          ],
+          "angles": [
+            0,
+            57344,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        },
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            103.802978515625,
+            53.71543884277344,
+            -32.063621520996094
+          ],
+          "angles": [
+            0,
+            45056,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        },
+        {
+          "type": 68,
+          "floor": 2,
+          "room": 12,
+          "position": [
+            -27.71002197265625,
+            57.132972717285156,
+            28.116851806640625
+          ],
+          "angles": [
+            0,
+            32768,
+            0
+          ],
+          "params": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0
+          ],
+          "wave": 1
+        }
+      ]
+    }
+  ],
+  "npcs": [
+    {
+      "episode": 1,
+      "floor": 2,
+      "area": 2,
+      "layout": 0,
+      "entities": 0,
+      "map": "map_forest02_00",
+      "table": "SetDataTableOn",
+      "room": 12,
+      "type": 1,
+      "name": "Researcher",
+      "handler": 100,
+      "dialogue": "Clear both waves, then return to me.",
+      "position": [
+        -44.345149993896484,
+        102.0,
+        -98.21731567382812
+      ],
+      "coordinateSpace": "room-local",
+      "facing": 0
+    }
+  ],
+  "spawns": [
+    {
+      "type": 0,
+      "floor": 2,
+      "room": 12,
+      "position": [
+        -44.345149993896484,
+        102.0,
+        -98.21731567382812
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "params": [
+        0.0,
+        1.0,
+        1.0,
+        0,
+        0,
+        0
+      ],
+      "wave": 0,
+      "slot": 0
+    },
+    {
+      "type": 0,
+      "floor": 2,
+      "room": 12,
+      "position": [
+        -37.335269927978516,
+        54.69558334350586,
+        -117.4944839477539
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "params": [
+        1.0,
+        1.0,
+        1.0,
+        0,
+        0,
+        0
+      ],
+      "wave": 0,
+      "slot": 1
+    },
+    {
+      "type": 0,
+      "floor": 2,
+      "room": 12,
+      "position": [
+        -54.85996627807617,
+        55.125938415527344,
+        -115.74201202392578
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "params": [
+        2.0,
+        1.0,
+        1.0,
+        0,
+        0,
+        0
+      ],
+      "wave": 0,
+      "slot": 2
+    },
+    {
+      "type": 0,
+      "floor": 2,
+      "room": 12,
+      "position": [
+        -26.820453643798828,
+        54.65183639526367,
+        -108.73213195800781
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "params": [
+        3.0,
+        1.0,
+        1.0,
+        0,
+        0,
+        0
+      ],
+      "wave": 0,
+      "slot": 3
+    }
+  ],
+  "doors": [
+    {
+      "type": 128,
+      "floor": 2,
+      "room": 12,
+      "position": [
+        53.62725830078125,
+        50.993186950683594,
+        -277.7227783203125
+      ],
+      "angles": [
+        0,
+        28672,
+        0
+      ],
+      "params": [
+        1.0,
+        1.0000015497207642,
+        1.0000005960464478,
+        2314,
+        2816,
+        0
+      ],
+      "wave": 0,
+      "switch": 10
+    }
+  ],
+  "provenance": {
+    "spawns": "extermination-ep1/q122-bb-e floor 2 room 12; copied local position/angles",
+    "enemies": "vr-ep1/q118-bb-e floor 2 room 12 wave 1; reused four positions for both waves",
+    "door": "vr-ep1/q118-bb-e floor 2 room 12; switch 10",
+    "npc": "New placement at first player spawn; needs accessibility/separation testing",
+    "status": "No client playtest"
+  }
+}

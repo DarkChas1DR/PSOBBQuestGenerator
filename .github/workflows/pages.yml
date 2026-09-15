@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir public
           cp index.html app.js style.css public/
-          cp -r data public/
+          cp -r data examples public/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
