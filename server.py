@@ -124,8 +124,11 @@ class Handler(SimpleHTTPRequestHandler):
             n=int(self.headers.get('Content-Length','0'))
             if not 0<n<=250000:raise ValueError('Request too large or empty')
             data=json.loads(self.rfile.read(n));current=data.get('plan')
-            if data.get('mode')=='encounter' and not (isinstance(current,dict) and current.get('spawns')):current=json.loads((ROOT/'examples/research-rescue.json').read_text(encoding='utf-8'))
-            p=generate(data.get('prompt'),current,data.get('model'));self.send_json(200,{'plan':p})
+            if data.get('mode')=='encounter':
+                import encounter_ai
+                p=encounter_ai.generate(data.get('prompt'),data.get('model'),current)
+            else:p=generate(data.get('prompt'),current,data.get('model'))
+            self.send_json(200,{'plan':p})
         except (ValueError,KeyError,TypeError) as e:self.send_json(422,{'error':'Generated plan failed validation: '+str(e)})
         except (OSError,urllib.error.URLError):self.send_json(503,{'error':'Local AI request failed or timed out. Check Ollama and the selected model.'})
 if __name__=='__main__':

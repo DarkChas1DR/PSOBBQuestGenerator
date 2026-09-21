@@ -1,41 +1,53 @@
 # PSOBB Quest Generator
 
-Separate quest-authoring project using a pinned snapshot of the [PSOBB Quest Database](https://github.com/DarkChas1DR/PSOBB-Quest-Database).
+[Public editor](https://darkchas1dr.github.io/PSOBBQuestGenerator/) · [Research database](https://github.com/DarkChas1DR/PSOBB-Quest-Database)
 
-## Current release: planning prototype
+Describe a quest, review the AI proposal, edit its plan, and build a Blue Burst test package. **Generated quests still require QEdit and client validation.**
 
-Episode 1 area/map/room selection, numbered map links, wave type/count entries, NPC positions/dialogue/handler planning, compatibility warnings, browser autosave and JSON plan import/export.
+## What works now
 
-**This is not yet a client-validated playable-quest generator.** Experimental single-floor BIN/DAT/QST compilation is implemented through a locally configured newserv tool. General placement authoring, full appearance editing, boss presets and native tests are unfinished. The compiler provides an explicit sequential event chain and completion handler for its test encounter. A local AI adapter is implemented; real-model validation is pending. It does not invent capacity limits or certify source-documented placements as client-tested.
+- Episode 1 area/map/room browsing, wave and NPC planning, plan import/export and browser autosave.
+- Local Ollama prompt generation, proposal review and undo.
+- A Forest 2 room 12 encounter preset with source-derived placement anchors, researcher dialogue, sequential waves, a door and a finish interaction.
+- Explicit Savage/Barbarous Wolf and Booma/Gobooma/Gigobooma variants, including their required parameters.
+- Experimental BB BIN/DAT/QST compilation through newserv, independent decoding and a build report.
 
-Open the site through any static HTTP server. For example, run `python -m http.server 8080` here and visit localhost:8080. There are no package dependencies. GitHub Pages deployment is provided by the workflow; repository Pages must allow GitHub Actions.
+The **public website is a planning editor**. AI and compilation run on your own computer; GitHub Pages cannot host Ollama. No API key or paid AI account is required for a local model. Hardware and electricity are still needed.
 
-## Development sequence
+## Run locally
 
-1. Structured authoring plan and pinned research data (initial implementation).
-2. Deterministic compiler/packager with an independently checked small encounter fixture.
-3. QEdit save/reopen and solo/four-player client tests.
-4. Backend AI planning with schema validation and server-side credentials.
-5. Broader encounters and episodes as verification grows.
+1. Install Python 3.10+ and [Ollama](https://ollama.com/). Download a model, for example `ollama pull qwen3:4b`.
+2. Download/clone this repository. In its folder run `python server.py` and open http://127.0.0.1:8088.
+3. For compilation, set `NEWSERV_PATH` to your [newserv](https://github.com/fuzziqersoftware/newserv) executable before starting the server. It is not bundled. The development compiler is build 1f7faff9+; every build report records its hash.
+4. Choose a local model and enter a prompt. Review the proposal, apply it, then build the QST package.
 
-The database remains a separate research site. Reference snapshot: f901e1f. Source data retains its original ownership; this repository adds no blanket licence over game or upstream reference material. Saved plans stay in the browser unless explicitly exported. No AI key is requested or stored.
+Example prompt:
 
-## Local AI integration (in development)
+> Build Lost Research Team for four players in Ultimate. Two waves: six Savage Wolves then eight Goboomas. Include a missing researcher briefing and dialogue.
 
-Run `python server.py`, then open http://127.0.0.1:8088. Install Ollama and an appropriate model separately, start Ollama, and use **Find local models**. Enter a prompt, generate, review, apply or undo. Local models have no per-request API fee, but require suitable hardware. Model quality and speed vary.
+In PowerShell, configure compilation with:
 
-The Python server calls Ollama on loopback only and never asks for an API key. It validates entity IDs, exact map variants and room references. Coordinates, wave activation and runtime compatibility remain unverified. GitHub Pages supports manual planning; AI requires this local backend. Do not expose the development server publicly.
+```powershell
+$env:NEWSERV_PATH = 'C:\path\to\newserv-windows.exe'
+python server.py
+```
 
-Adapter/validation tests: `python -m unittest test_server.py`. Editor smoke test: `node smoke.cjs`. The adapter test uses a mocked response; a real local-model run is pending because Ollama is not installed in the development environment.
+The server listens only on loopback. Do not expose this development server publicly. The browser sends quest prompts only to that local server; it calls Ollama on loopback. Source files and environment settings are not served by the app.
 
-API reference: https://docs.ollama.com/api/chat
+## Supported scope and limits
 
-## Experimental BB quest export
+The buildable AI preset currently targets **Forest 2 room 12**. The 16-wave and 24-record budgets are application limits, not proven PSOBB capacity limits. General Episode 1 planning supports more maps but requires explicit placements before compiling. Bosses, item rewards, additional episodes, full appearance editing and multi-floor compilation remain unfinished. General full-plan model generation has timed out in testing; the compact encounter recipe is the tested path.
 
-Set `NEWSERV_PATH` to your newserv executable before starting `python server.py`. The tested development executable is newserv 1f7faff9+; the build report records its SHA-256. Obtain/build newserv from https://github.com/fuzziqersoftware/newserv; it is not bundled here.
+Difficulty is design intent: choose the matching server mode. Completion sets the success register and the researcher interaction exits the test quest; no rewards are awarded. NPC accessibility, door operation, starting-floor drop behavior, progression and four-player synchronization remain unverified in the client. Do not install over an existing production quest; the test uses quest number 65000.
 
-In the editor, **Load two-wave test encounter**, then **Build QST package**. The ZIP contains QST, compressed BIN/DAT, assembly, independent decoder outputs and a build report. The example combines source-derived Forest 2 placement anchors with newly generated logic; it is **not yet client-playtested**. NPC accessibility, door behavior, completion and multiplayer need native tests. Do not replace an existing server quest with this test without choosing a separate server entry and checking its quest number.
+## Evidence and tests
 
-AI encounter scope uses this placement template when starting an empty plan. Matching positions are retained; unsupported spatial changes remain uncompiled. General planning can cover more maps than the experimental compiler.
+Run `python -m unittest test_server.py test_compiler.py test_encounter_ai.py` and `node smoke.cjs`. Setting `NEWSERV_PATH` includes real compiler/QST round-trip tests; otherwise that test is explicitly skipped. The local model has produced a recipe matching six Savage Wolves and eight Goboomas and compiled successfully. Source-derived coordinates are not a substitute for gameplay tests.
 
-Run `python -m unittest test_server.py test_compiler.py` with `NEWSERV_PATH` set to include real compilation and QST extraction tests. One test also checks that joining stays disabled: newserv's `.joinable` directive is enabled by presence, even if followed by `false`.
+[Current validation record](VALIDATION.md) tracks completed checks and outstanding work. No 100% compatibility claim is made.
+
+## Reference provenance
+
+Pinned database snapshot: f901e1f. Spatial anchors come from TTF and Monster Bash 1: Encore; source quest IDs are retained per position. Model decisions cannot invent anchor coordinates. Upstream data and game materials retain their original ownership; this repository adds no blanket licence over them.
+
+Ollama protocol: [structured outputs](https://docs.ollama.com/capabilities/structured-outputs).
