@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '24'
       - name: Validate planner and recipe behavior
-        run: python -m unittest test_server.py test_compiler.py test_encounter_ai.py
+        run: python -m unittest discover
       - name: Check editor interactions
         run: node smoke.cjs
   deploy:

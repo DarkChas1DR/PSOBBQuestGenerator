@@ -3,6 +3,7 @@ from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
 from pathlib import Path
 import json,os,urllib.request,urllib.error,tempfile,zipfile,io,threading,subprocess
 BUILD_LOCK=threading.Lock()
+AI_LOCK=threading.Lock()
 ROOT=Path(__file__).resolve().parent
 REF=json.loads((ROOT/'data/reference.json').read_text(encoding='utf-8'))
 def validate(p):
@@ -104,7 +105,9 @@ class Handler(SimpleHTTPRequestHandler):
             try:
                 n=int(self.headers.get('Content-Length','0'))
                 if not 0<n<=2000000:raise ValueError('Invalid build request size')
-                data=json.loads(self.rfile.read(n));tool=os.environ.get('NEWSERV_PATH','')
+                data=json.loads(self.rfile.read(n))
+                if not isinstance(data,dict) or not isinstance(data.get('plan'),dict):raise ValueError('Request requires a plan object')
+                tool=os.environ.get('NEWSERV_PATH','')
                 if not tool or not Path(tool).is_file():return self.send_json(503,{'error':'Configure NEWSERV_PATH on the local server to enable QST compilation.'})
                 import compiler
                 with tempfile.TemporaryDirectory(prefix='psobb-build-') as temp:
@@ -120,11 +123,13 @@ class Handler(SimpleHTTPRequestHandler):
             finally:BUILD_LOCK.release()
             return
         if self.path!='/api/generate':return self.send_json(404,{'error':'Not found'})
+        if not AI_LOCK.acquire(blocking=False):return self.send_json(409,{'error':'AI generation is already running. Wait for it to finish before retrying.'})
         try:
             n=int(self.headers.get('Content-Length','0'))
             if not 0<n<=250000:raise ValueError('Request too large or empty')
             data=json.loads(self.rfile.read(n))
             if not isinstance(data,dict):raise ValueError('Request must be a JSON object')
+            if data.get('mode','plan') not in ('plan','encounter'):raise ValueError('Unknown generation scope')
             current=data.get('plan')
             if current is not None:
                 import copy
@@ -136,5 +141,6 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_json(200,{'plan':p})
         except (ValueError,KeyError,TypeError) as e:self.send_json(422,{'error':'Generated plan failed validation: '+str(e)})
         except (OSError,urllib.error.URLError):self.send_json(503,{'error':'Local AI request failed or timed out. Check Ollama and the selected model.'})
+        finally:AI_LOCK.release()
 if __name__=='__main__':
     port=int(os.environ.get('PORT','8088'));print(f'Quest editor: http://127.0.0.1:{port}',flush=True);ThreadingHTTPServer(('127.0.0.1',port),Handler).serve_forever()

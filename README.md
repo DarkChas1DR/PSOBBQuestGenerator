@@ -42,7 +42,7 @@ Difficulty is design intent: choose the matching server mode. Completion sets th
 
 ## Evidence and tests
 
-Run `python -m unittest test_server.py test_compiler.py test_encounter_ai.py` and `node smoke.cjs`. Setting `NEWSERV_PATH` includes real compiler/QST round-trip tests; otherwise that test is explicitly skipped. The local model has produced a recipe matching six Savage Wolves and eight Goboomas and compiled successfully. Source-derived coordinates are not a substitute for gameplay tests.
+Run `python -m unittest discover` and `node smoke.cjs`. Setting `NEWSERV_PATH` includes real compiler/QST round-trip tests; otherwise that test is explicitly skipped. The local model has produced a recipe matching six Savage Wolves and eight Goboomas and compiled successfully. Source-derived coordinates are not a substitute for gameplay tests.
 
 [Current validation record](VALIDATION.md) tracks completed checks and outstanding work. No 100% compatibility claim is made.
 

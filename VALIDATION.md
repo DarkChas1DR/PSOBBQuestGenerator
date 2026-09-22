@@ -2,7 +2,7 @@
 
 ## Completed
 
-- 18 Python checks, including actual newserv compilation when NEWSERV_PATH is set.
+- 24 Python checks, including actual newserv compilation when NEWSERV_PATH is set.
 - QST extraction reproduces compressed BIN/DAT payloads byte-for-byte.
 - Independent decoder verifies script metadata and expected object/enemy counts.
 - Named variant tests verify Savage Wolf parameter 2 and Gobooma parameter 6.
@@ -16,6 +16,8 @@
 - Negated feature lists such as “no boss or rewards” are accepted; separate positive requests remain rejected.
 - Revision requests include existing NPC dialogue in the model context. Exact preservation still depends on the model and proposal review.
 - Publishing now runs Python checks and the editor smoke check first. Hosted checks skip the native newserv test when the executable is unavailable; local native compilation remains a separate check.
+
+- HTTP boundary checks cover invalid requests, rejected external origins, concurrent AI requests, provider failure recovery, compiler configuration errors and private source paths.
 
 ## Pending
 
