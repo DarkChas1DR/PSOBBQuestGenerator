@@ -15,6 +15,7 @@ def expand(recipe):
     p.update(name=recipe['name'],brief=recipe['brief'],difficulty=recipe['difficulty'],party=recipe['party'])
     p['npcs'][0]['dialogue']=recipe['dialogue']
     for i,w in enumerate(recipe['waves'],1):
+        if not isinstance(w,dict):raise ValueError('Invalid wave entry')
         if w.get('enemy') not in VARIANTS:raise ValueError('Unknown enemy variant')
         variant=VARIANTS[w['enemy']];profile=ANCHORS[str(variant['type'])];count=w.get('count')
         if type(count) is not int or not 1<=count<=min(24,len(profile['positions'])):raise ValueError('Count exceeds available anchors or prototype build budget; not a game limit')
@@ -30,7 +31,8 @@ def check_preset_request(prompt):
     # Guard common unsupported requests independently of the model. The UI states
     # this preset's scope; this check is not a general natural-language proof.
     text=prompt.lower()
-    text=re.sub(r"\b(?:no|without|exclude|excluding)\s+(?:a\s+|any\s+)?(?:boss(?:es)?|rewards?|items?)\b",'',text)
+    excluded=r'(?:a\s+|any\s+)?(?:boss(?:es)?|rewards?|items?)\b'
+    text=re.sub(r'\b(?:no|without|exclude|excluding)\s+'+excluded+r'(?:\s*(?:,\s*(?:(?:and|or)\s+)?|(?:and|or)\s+)'+excluded+r')*','',text)
     patterns={'boss encounter':r'\b(?:boss(?:es)?|dragon|de rol le|dark falz|vol opt)\b','another area or episode':r'\b(?:forest\s*1|caves?|mines?|ruins?|episode\s*[24])\b','item or currency rewards':r'\b(?:rewards?|meseta|loot|items?|weapons?)\b'}
     for reason,pattern in patterns.items():
         if re.search(pattern,text):raise ValueError('This Forest 2 preset does not yet support '+reason+'. Use the general planner for an uncompiled design.')
@@ -40,10 +42,15 @@ def generate(prompt,model,current=None):
     if not isinstance(model,str) or not model or len(model)>100:raise ValueError('Select a local model')
     check_preset_request(prompt)
     menu=[dict(enemy=key,name=v['name'],max_count=min(24,len(ANCHORS[str(v['type'])]['positions']))) for key,v in VARIANTS.items()]
-    instruction='You create PSOBB quest recipes. Available preset: Forest 2 room 12, one researcher NPC, an exit door and sequential enemy waves. Select named enemy variants from enemy_menu. Copy each exact enemy key; the builder assigns base IDs and variant parameters. Respect the requested title, party size, difficulty, counts and dialogue. IMPORTANT: unsupported lists ONLY features explicitly requested by the user that this preset cannot implement. If the user requests a rescue story, dialogue, Ultimate, four players and waves from enemy_menu, unsupported MUST be []. Do not list preset restrictions, missing requests, or phrases such as "No boss" in unsupported. A user explicitly asking for another map, a boss, item rewards or more NPCs is unsupported. Bounds of 24 enemies per entry and 16 waves are prototype budgets, not game limits. Return JSON matching the schema, with concise text.'
+    instruction='You create PSOBB quest recipes. Available preset: Forest 2 room 12, one researcher NPC, an exit door and sequential enemy waves. Select named enemy variants from enemy_menu. Copy each exact enemy key; the builder assigns base IDs and variant parameters. Respect the requested title, party size, difficulty, counts and dialogue. IMPORTANT: unsupported lists ONLY features explicitly requested by the user that this preset cannot implement. If the user requests a rescue story, dialogue, Ultimate, four players and waves from enemy_menu, unsupported MUST be []. Do not list preset restrictions, missing requests, or phrases such as "No boss" in unsupported. A user explicitly asking for another map, a boss, item rewards or more NPCs is unsupported. Bounds of 24 enemies per entry and 16 waves are prototype budgets, not game limits. When revising, preserve existing fields and dialogue unless the request changes them. Return JSON matching the schema, with concise text.'
 
     context={'request':prompt,'enemy_menu':menu}
-    if isinstance(current,dict):context['existing']={k:current.get(k) for k in ('name','brief','difficulty','party')};context['existing']['waves']=[{k:w.get(k) for k in ('enemyVariant','type','count')} for w in current.get('waves',[])]
+    if current is not None:
+        from server import validate
+        validate(copy.deepcopy(current))
+        context['existing']={k:current.get(k) for k in ('name','brief','difficulty','party')}
+        context['existing']['waves']=[{k:w.get(k) for k in ('enemyVariant','type','count')} for w in current['waves']]
+        context['existing']['dialogue']=[n['dialogue'] for n in current['npcs']]
     payload={'model':model,'stream':False,'think':False,'format':SCHEMA,'options':{'num_ctx':4096,'num_predict':1500,'temperature':0.2},'messages':[{'role':'system','content':instruction},{'role':'user','content':json.dumps(context)}]}
     request=urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
     with urllib.request.urlopen(request,timeout=180) as r:result=json.loads(r.read(1000000))

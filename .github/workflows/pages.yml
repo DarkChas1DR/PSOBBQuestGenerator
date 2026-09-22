@@ -11,7 +11,22 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate planner and recipe behavior
+        run: python -m unittest test_server.py test_compiler.py test_encounter_ai.py
+      - name: Check editor interactions
+        run: node smoke.cjs
   deploy:
+    needs: checks
     runs-on: ubuntu-latest
     environment:
       name: github-pages

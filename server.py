@@ -123,7 +123,12 @@ class Handler(SimpleHTTPRequestHandler):
         try:
             n=int(self.headers.get('Content-Length','0'))
             if not 0<n<=250000:raise ValueError('Request too large or empty')
-            data=json.loads(self.rfile.read(n));current=data.get('plan')
+            data=json.loads(self.rfile.read(n))
+            if not isinstance(data,dict):raise ValueError('Request must be a JSON object')
+            current=data.get('plan')
+            if current is not None:
+                import copy
+                validate(copy.deepcopy(current))
             if data.get('mode')=='encounter':
                 import encounter_ai
                 p=encounter_ai.generate(data.get('prompt'),data.get('model'),current)
